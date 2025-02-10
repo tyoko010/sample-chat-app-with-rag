@@ -1,7 +1,10 @@
 'use client'
 
-import { useState, KeyboardEvent } from "react";
+import { useState, FormEventHandler } from "react";
 import ChatBubble from "./chatbubble";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 // サーバーからのレスポンス型
 type RetrieveResponse = {
@@ -60,11 +63,10 @@ function ChatApp() {
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // デフォルト動作(フォーム送信等)を防止
-      handleSendMessage();
-    }
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+
+    handleSendMessage();
   };
 
   const formatAnswer = (data: RetrieveResponse) => {
@@ -74,38 +76,33 @@ function ChatApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* ヘッダー */}
-      <header className="bg-gray-700 text-gray-50 py-3 px-4">
+      <header className="py-3 px-4">
         <h1 className="text-xl font-bold">Simple Chat App with Local Store</h1>
       </header>
 
       {/* メインコンテンツ */}
       <main className="flex-1 p-4 flex flex-col">
         {/* チャット履歴表示 */}
-        <div className="flex-1 overflow-auto mb-4">
+        <div className="flex-1 overflow-auto mb-4 w-4xl m-auto">
           {messages.map((msg, index) => (
             <ChatBubble key={index} role={msg.role} content={msg.content} />
           ))}
         </div>
 
         {/* 入力・送信UI */}
-        <div className="flex gap-2">
-          <input
+        <form className="flex gap-2" onSubmit={handleSubmit}>
+          <Input
             type="text"
-            className="flex-1 p-2 border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 text-black"
             placeholder="ここに質問を入力..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            onKeyDown={handleKeyDown}
           />
-          <button
-            onClick={handleSendMessage}
-            className="px-4 py-2 bg-gray-600 text-gray-50 rounded hover:bg-gray-700"
-          >
+          <Button type="submit">
             送信
-          </button>
-        </div>
+          </Button>
+        </form>
       </main>
     </div>
   );

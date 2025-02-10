@@ -4,7 +4,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from engine import OpenAIEngine
+from backend.app.engine import OpenAIEngine
 
 engine = OpenAIEngine(os.environ.get("OPENAI_API_KEY"))
 
