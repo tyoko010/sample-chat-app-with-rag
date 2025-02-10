@@ -35,7 +35,7 @@ function ChatApp() {
 
     // retrieve APIに問い合わせ
     try {
-      const response = await fetch("http://127.0.0.1:8000/retrieve", {
+      const response = await fetch("/api/retrieve", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

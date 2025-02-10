@@ -10,14 +10,6 @@ from engine import OpenAIEngine
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
-
 class RetrieveRequest(BaseModel):
     question: str
 
@@ -25,7 +17,7 @@ class RetrieveResponse(BaseModel):
     answer: str
     sources: List[str]
 
-@app.post("/retrieve", response_model=RetrieveResponse)
+@app.post("/api/retrieve", response_model=RetrieveResponse)
 def query_api(req: RetrieveRequest):
     """
     ユーザーからの質問に対してRAG情報を元に回答します。
