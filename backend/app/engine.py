@@ -28,9 +28,9 @@ class OpenAIEngine:
 
     def __init__(self, openai_api_key, store_path = STORE_PATH):
         self._models = {
-            'gpt-4o',
-            'gpt-4o-mini',
-            'o1-mini',
+            'gpt-4o': 'ChatGPT 4o',
+            'gpt-4o-mini': 'ChatGPT 4o-mini',
+            'o1-mini': 'ChatGPT o1-mini',
         }
 
         self.openai_api_key = openai_api_key
@@ -109,3 +109,6 @@ class OpenAIEngine:
         chain = llm | StrOutputParser()
 
         return chain.invoke(prompt)
+
+    def list_models(self):
+        return [{'key': k, 'label': v} for k, v in self._models.items()]

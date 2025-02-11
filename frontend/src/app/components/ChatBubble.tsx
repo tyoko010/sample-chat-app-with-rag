@@ -6,7 +6,7 @@ type ChatBubbleProps = {
   content: string;
 };
 
-function ChatBubble({ role, content }: ChatBubbleProps) {
+export function ChatBubble({ role, content }: ChatBubbleProps) {
   const isUser = role === "user";
 
   const bubbleClass = isUser
@@ -22,5 +22,3 @@ function ChatBubble({ role, content }: ChatBubbleProps) {
     </Card>
   );
 }
-
-export default ChatBubble;

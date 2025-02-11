@@ -5,7 +5,8 @@ import { useState, FormEventHandler } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import ChatBubble from "./chatbubble";
+import { ChatBubble } from "./ChatBubble";
+import { useSelectedVersion } from "./ModelVersionContext";
 
 type RetrieveResponse = {
   answer: string;
@@ -21,9 +22,10 @@ type Message = {
   content: string;
 };
 
-function ChatApp() {
+export function ChatApp() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const { selectedVersion } = useSelectedVersion();
 
   const handleSendMessage = async () => {
     if (!question.trim()) return;
@@ -43,7 +45,10 @@ function ChatApp() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: question }),
+        body: JSON.stringify({
+          message: question,
+          model: selectedVersion.key,
+        }),
       });
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
@@ -80,38 +85,30 @@ function ChatApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {/* ヘッダー */}
-      <header className="py-3 px-4">
-        <h1 className="text-xl font-bold">Simple Chat App with Local Store</h1>
-      </header>
-
-      {/* メインコンテンツ */}
-      <main className="flex-1 flex flex-col w-96 mx-auto p-4">
+      <main className="flex-1 flex flex-col w-4/5 mx-auto p-4">
         {/* チャット履歴表示 */}
           {messages.map((msg, index) => (
             <ChatBubble key={index} role={msg.role} content={msg.content} />
           ))}
-
-        {/* 入力・送信UI */}
-        <form
-          className="fixed bottom-0 left-0 right-0 bg-background p-4"
-          onSubmit={handleSubmit}
-        >
-          <div className="max-w-4xl mx-auto flex gap-2">
-            <Input
-              type="text"
-              placeholder="メッセージを入力してください..."
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
-            <Button type="submit">
-              送信
-            </Button>
-          </div>
-        </form>
       </main>
+      {/* 入力・送信UI */}
+      <form
+        className="sticky bottom-0 bg-background p-4"
+        onSubmit={handleSubmit}
+      >
+        <div className="mx-auto flex gap-2">
+          <Input
+            type="text"
+            placeholder="メッセージを入力してください..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+          <Button type="submit">
+            送信
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }
 
-export default ChatApp;
