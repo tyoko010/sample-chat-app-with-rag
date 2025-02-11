@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   devIndicators: {
     appIsrStatus: false,
   },
-  rewrites: async () => {
+  async rewrites() {
     return [
       {
         source: "/api/:path*",

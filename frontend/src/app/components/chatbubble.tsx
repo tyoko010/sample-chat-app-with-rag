@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 type ChatBubbleProps = {
-  role: "user" | "system";
+  role: "user" | "assistant";
   content: string;
 };
 
@@ -15,10 +15,10 @@ function ChatBubble({ role, content }: ChatBubbleProps) {
 
   return (
     <Card className={cn(
-      "w-fit break-words mb-2 p-3 rounded-xl",
+      "w-fit break-words mb-2 p-3 rounded-xl whitespace-pre-line",
       bubbleClass
     )}>
-      <pre>{content}</pre>
+      {content}
     </Card>
   );
 }

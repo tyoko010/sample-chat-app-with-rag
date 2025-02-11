@@ -31,3 +31,23 @@ def query_api(req: RetrieveRequest):
         answer=answer,
         sources=sources
     )
+
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    message: str
+
+@app.post("/api/chat", response_model=ChatResponse)
+def query_api(req: ChatRequest):
+    """
+    ユーザーからの質問に対してRAG情報を元に回答します。
+    回答には参照した情報のURLが含まれます。
+    """
+    engine = OpenAIEngine(os.environ.get("OPENAI_API_KEY"))
+
+    message = engine.chat(req.message)
+
+    return ChatResponse(
+        message=message
+    )

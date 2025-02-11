@@ -27,6 +27,12 @@ class OpenAIEngine:
     """
 
     def __init__(self, openai_api_key, store_path = STORE_PATH):
+        self._models = {
+            'gpt-4o',
+            'gpt-4o-mini',
+            'o1-mini',
+        }
+
         self.openai_api_key = openai_api_key
 
         self.vectorstore = Chroma(
@@ -67,14 +73,39 @@ class OpenAIEngine:
 
         return merged_context, source_links
     
-    def _get_qa_chain(self):
+    def _get_qa_chain(self, model_name="gpt-4o-mini"):
+        if model_name not in self._models:
+            raise ValueError(f"Model {model_name} not supported")
+
         prompt = PromptTemplate(
             input_variables=["context", "question"],
             template=OpenAIEngine.PROMPT_TEMPLATE
         )
         llm = ChatOpenAI(
-            model="gpt-4o-mini",
+            model=model_name,
             openai_api_key=self.openai_api_key
         )
         qa_chain = prompt | llm | StrOutputParser()
         return qa_chain
+
+    def _chat_chain(self, model_name="gpt-4o-mini"):
+        if model_name not in self._models:
+            raise ValueError(f"Model {model_name} not supported")
+
+        llm = ChatOpenAI(
+            model=model_name,
+            openai_api_key=self.openai_api_key
+        )
+        return llm | StrOutputParser()
+
+    def chat(self, prompt, model_name="gpt-4o-mini"):
+        if model_name not in self._models:
+            raise ValueError(f"Model {model_name} not supported")
+
+        llm = ChatOpenAI(
+            model=model_name,
+            openai_api_key=self.openai_api_key
+        )
+        chain = llm | StrOutputParser()
+
+        return chain.invoke(prompt)
